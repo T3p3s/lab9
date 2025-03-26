@@ -9,6 +9,8 @@ import '../models/bank_card.dart';
 class BankCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<BankCardBloc>().add(FetchBankCardFromAPI());
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Bank Card', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -16,9 +18,7 @@ class BankCardView extends StatelessWidget {
       ),
       body: BlocBuilder<BankCardBloc, BankCardState>(
         builder: (context, state) {
-          if (state is BankCardInitial) {
-            return _buildInitialUI(context);
-          } else if (state is BankCardLoading) {
+          if (state is BankCardLoading || state is BankCardInitial) {
             return _buildLoadingUI();
           } else if (state is BankCardLoaded) {
             return _buildCardUI(state.bankCard);
@@ -27,22 +27,6 @@ class BankCardView extends StatelessWidget {
           }
           return Container();
         },
-      ),
-    );
-  }
-
-  Widget _buildInitialUI(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        onPressed: () {
-          BlocProvider.of<BankCardBloc>(context).add(FetchBankCardFromAPI());
-        },
-        child: Text('Fetch Bank Card', style: TextStyle(fontSize: 18, color: Colors.white)),
       ),
     );
   }
